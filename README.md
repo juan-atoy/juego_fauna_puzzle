@@ -6,15 +6,14 @@ y fomentar la conciencia ambiental.
 
 Objetivo General
 
-Desarrollar un juego tipo puzzle que promueva habilidades cognitivas y la conciencia sobre la conservación de los ecosistemas latinoamericanos mediante
-la mecánica de emparejamiento de cartas.
+Desarrollar un juego educativo tipo puzzle de concentración que fomente el aprendizaje sobre la fauna latinoamericana, promoviendo habilidades cognitivas y la conciencia sobre la importancia de la conservación de los ecosistemas en los jugadores.}
 
 Objetivos Específicos
 
-- Fomentar habilidades cognitivas como memoria, concentración y resolución de problemas.
-- Proporcionar información educativa sobre la fauna y la biodiversidad de Latinoamérica.
-- Diseñar una interfaz visualmente atractiva con elementos naturales y educativos.
-- Motivar al jugador a completar el juego con eficiencia, optimizando tiempo y movimientos.
+•Fomentar habilidades cognitivas como la memoria, la concentración y la resolución de problemas mediante la mecánica de emparejamiento de cartas en un tiempo limitado.
+•Promover la conciencia ambiental al proporcionar información educativa sobre la biodiversidad y la importancia de la conservación de los ecosistemas latinoamericanos.
+•Diseñar una interfaz atractiva con colores y elementos visuales que reflejen la riqueza natural de Latinoamérica, incentivando la participación del jugador.
+•Ofrecer una experiencia lúdica y educativa que motive a los jugadores a completar el juego en el menor tiempo y con el menor número de movimientos, optimizando sus estrategias.
 
 Porque el Nombre
 
