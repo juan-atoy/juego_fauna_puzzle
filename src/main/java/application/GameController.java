@@ -67,7 +67,7 @@ public class GameController {
     public void cardClicked(AnimalCard card) {
         if (!canClick || card.isMatched() || card == firstSelected) return;
 
-        clicIntentos++; // Cada clic cuenta como intento
+        
         LabelMaxInetos.setText("Intentos : " +  clicIntentos + " / " + maxIntentos);
         if (clicIntentos >= maxIntentos) {
             showGameOverMessage();
@@ -84,6 +84,7 @@ public class GameController {
             canClick = false;
 
             if (firstSelected.getAnimal().equals(secondSelected.getAnimal())) {
+                clicIntentos++; // Cada clic cuenta como intento
                 firstSelected.setMatched(true);
                 secondSelected.setMatched(true);
                 playSound("match.mp3");
@@ -96,6 +97,7 @@ public class GameController {
                     showVictoryMessage();
                 }
             } else {
+                clicIntentos++; // Cada clic cuenta como intento
                 playSound("mismatch.mp3");
                 Timer t = new Timer();
                 t.schedule(new TimerTask() {
