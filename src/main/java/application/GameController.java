@@ -10,6 +10,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.AudioClip;
 import java.util.*;
+import javafx.geometry.Pos;
+
 
 public class GameController {
     private GridPane grid;
@@ -29,6 +31,7 @@ public class GameController {
         StackPane root = new StackPane();
         /// CREACION DE TABLERO
         grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(20));
         grid.setHgap(10);
         grid.setVgap(10);
@@ -56,10 +59,11 @@ public class GameController {
 
         /// 🔁 Aquí está la parte que falta en tu código original:
         VBox layout = new VBox(10); // espacio entre elementos
+        layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(20));
         layout.getChildren().addAll(LabelMaxInetos, grid); // agrega el Label y el grid
         root.getChildren().add(layout); // agrega el VBox al StackPane
-
+        StackPane.setAlignment(layout, Pos.CENTER);
         ///root.getChildren().add(grid);
         return root;
     }
