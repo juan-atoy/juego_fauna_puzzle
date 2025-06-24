@@ -1,5 +1,7 @@
 package application;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -9,6 +11,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.AudioClip;
+import javafx.util.Duration;
+
 import java.util.*;
 
 public class GameController {
@@ -17,9 +21,13 @@ public class GameController {
     private AnimalCard secondSelected;
     private boolean canClick = true;
     private int pairsFound = 0;
-    private int maxIntentos = 10; /// VARIABLES NUEVOS PARA MAXIMO NUMERO DE INTENTOS
-    private int clicIntentos= 0;  /// VARIABLES CLIC CONTADOR
+    private int maxIntentos = 10;
+    private int clicIntentos = 0;
+
     private Label LabelMaxInetos;
+    private Label tiempoLabel;
+    private Timeline timeline;
+    private int tiempoSegundos = 0;
 
     private final String[] animalNames = {
         "jaguar", "llama", "condor", "anaconda"
@@ -27,17 +35,17 @@ public class GameController {
 
     public StackPane createContent() {
         StackPane root = new StackPane();
-        /// CREACION DE TABLERO
         grid = new GridPane();
         grid.setPadding(new Insets(20));
         grid.setHgap(10);
         grid.setVgap(10);
 
-        /// /MOSTRAR MAXIMO DE INTETOS
-        LabelMaxInetos = new Label("Intentos : 0 /" +  maxIntentos);
+        LabelMaxInetos = new Label("Intentos : 0 /" + maxIntentos);
         LabelMaxInetos.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
-        /// MAZCLADOR DE CARTAS
+        tiempoLabel = new Label("Tiempo: 0s");
+        tiempoLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+
         List<String> images = new ArrayList<>();
         for (String name : animalNames) {
             images.add(name);
@@ -45,8 +53,6 @@ public class GameController {
         }
 
         Collections.shuffle(images);
-
-        int rows = 2;
         int cols = images.size() / 2;
 
         for (int i = 0; i < images.size(); i++) {
@@ -54,21 +60,22 @@ public class GameController {
             grid.add(card, i % cols, i / cols);
         }
 
-        /// 🔁 Aquí está la parte que falta en tu código original:
-        VBox layout = new VBox(10); // espacio entre elementos
+        VBox layout = new VBox(10);
         layout.setPadding(new Insets(20));
-        layout.getChildren().addAll(LabelMaxInetos, grid); // agrega el Label y el grid
-        root.getChildren().add(layout); // agrega el VBox al StackPane
+        layout.getChildren().addAll(LabelMaxInetos, tiempoLabel, grid);
+        root.getChildren().add(layout);
 
-        ///root.getChildren().add(grid);
+        iniciarTemporizador();
+
         return root;
     }
 
     public void cardClicked(AnimalCard card) {
         if (!canClick || card.isMatched() || card == firstSelected) return;
 
-        clicIntentos++; // Cada clic cuenta como intento
-        LabelMaxInetos.setText("Intentos : " +  clicIntentos + " / " + maxIntentos);
+        clicIntentos++;
+        LabelMaxInetos.setText("Intentos : " + clicIntentos + " / " + maxIntentos);
+
         if (clicIntentos >= maxIntentos) {
             showGameOverMessage();
             return;
@@ -112,6 +119,24 @@ public class GameController {
         }
     }
 
+    private void iniciarTemporizador() {
+        tiempoSegundos = 0;
+        tiempoLabel.setText("Tiempo: 0s");
+
+        timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            tiempoSegundos++;
+            tiempoLabel.setText("Tiempo: " + tiempoSegundos + "s");
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+    }
+
+    private void detenerTemporizador() {
+        if (timeline != null) {
+            timeline.stop();
+        }
+    }
+
     private void resetTurn() {
         firstSelected = null;
         secondSelected = null;
@@ -131,11 +156,53 @@ public class GameController {
     }
 
     private void showVictoryMessage() {
+        detenerTemporizador();
+
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("¡Felicidades!");
         alert.setHeaderText("Has descubierto toda la fauna.");
         alert.setContentText("Gracias por jugar y aprender sobre la biodiversidad de Latinoamérica.");
         alert.show();
+    }
+
+    private void showGameOverMessage() {
+        detenerTemporizador();
+
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Advertencia");
+        alert.setHeaderText("¡Juego Terminado!");
+        alert.setContentText("Inténtalo de nuevo para descubrir toda la fauna.");
+        alert.show();
+
+        alert.setOnCloseRequest(e -> ReinicioJuego());
+        canClick = false;
+    }
+
+    private void ReinicioJuego() {
+        firstSelected = null;
+        secondSelected = null;
+        pairsFound = 0;
+        clicIntentos = 0;
+        canClick = true;
+
+        LabelMaxInetos.setText("Intentos : 0 /" + maxIntentos);
+        grid.getChildren().clear();
+
+        List<String> images = new ArrayList<>();
+        for (String name : animalNames) {
+            images.add(name);
+            images.add(name);
+        }
+
+        Collections.shuffle(images);
+        int cols = images.size() / 2;
+
+        for (int i = 0; i < images.size(); i++) {
+            AnimalCard card = new AnimalCard(images.get(i), this);
+            grid.add(card, i % cols, i / cols);
+        }
+
+        iniciarTemporizador();
     }
 
     private String getAnimalFact(String name) {
@@ -146,48 +213,5 @@ public class GameController {
             case "anaconda": return "La anaconda es una serpiente gigante que habita en ríos sudamericanos.";
             default: return "Animal fascinante de la fauna latinoamericana.";
         }
-    }
-
-    ///  NUEVOS METODOS JD
-    private void showGameOverMessage(){
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Advertencia");
-        alert.setHeaderText("¡Juego Terminado!");
-        alert.setContentText("Inténtalo de nuevo para descubrir toda la fauna.");
-        alert.show();
-
-        alert.setOnCloseRequest(e -> ReinicioJuego());
-        alert.show();
-
-        canClick = false;
-    }
-
-    private  void ReinicioJuego(){
-        firstSelected = null;
-        secondSelected = null;
-        pairsFound = 0;
-        clicIntentos = 0;
-        canClick = true;
-
-        LabelMaxInetos.setText("Intentos : 0 /" +  maxIntentos);
-
-        grid.getChildren().clear();
-
-        List<String> images = new ArrayList<>();
-        for (String name : animalNames) {
-            images.add(name);
-            images.add(name);
-        }
-
-        Collections.shuffle(images);
-
-        int rows = 2;
-        int cols = images.size() / 2;
-
-        for (int i = 0; i < images.size(); i++) {
-            AnimalCard card = new AnimalCard(images.get(i), this);
-            grid.add(card, i % cols, i / cols);
-        }
-
     }
 }
